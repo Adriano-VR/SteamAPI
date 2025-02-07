@@ -12,7 +12,7 @@ export const CardDetails: FC<{ game: GameDetails }> = ({ game }) => {
     return (
 
 
-        <Card shadow="sm" className="grid grid-cols-2 max-w-[1100px]">
+        <Card shadow="sm" className="grid grid-cols-1 md:grid-cols-2 max-w-[1100px]">
             <CardBody className="overflow-visible p-0 w-full">
                 <Image
                     alt={game.name}

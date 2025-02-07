@@ -1,9 +1,10 @@
 "use client"
 import { CardDetails } from "@/components/CardDetails";
 import { getGamesById } from "@/http/http";
-import { Game, GameDetails } from "@/interface/interface";
+import {  GameDetails } from "@/interface/interface";
 import { useParams } from "next/navigation"; // Importando o useRouter
 import { useEffect, useState } from "react";
+import {Spinner} from "@heroui/react";
 
 const GameDetailsPage = () => {
   const { gameId } = useParams(); // Captura o 'gameId' da URL
@@ -21,13 +22,8 @@ const GameDetailsPage = () => {
     fetch();
   }, [gameId]); // Add gameId as a dependency to refetch if it changes
 
-  if (loading) {
-    return (
-      <div>
-        <p>Loading...</p> {/* Display loading text while fetching */}
-      </div>
-    );
-  }
+  if (loading) return  <div className="absolute inset-0 flex items-center justify-center"> <Spinner size='lg' label='Loading' color="success" /> </div>
+
 
   return (
     <div>

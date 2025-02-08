@@ -3,12 +3,12 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { CardDetails } from "@/components/CardDetails";
 import { useEffect, useState } from "react";
-import { Game, GameDetails } from "@/interface/interface";
-import { getGamesComingSoon, getMostHypedGames } from "@/http/http";
-import { Spinner } from "@heroui/react";
+import { GameDetails } from "@/interface/interface";
+import { getMostHypedGames } from "@/http/http";
+import { Divider, Spinner } from "@heroui/react";
 import {  CardComponentHome } from "@/components/CardComponentHome";
+import Image from "next/image";
 
 const Home: React.FC = () => {
 
@@ -33,10 +33,11 @@ const Home: React.FC = () => {
     infinite: true,
     slidesToShow: 5,
     slidesToScroll: 1,
-    autoplay: false,
+    autoplay: true,
     speed: 2000,
     autoplaySpeed: 2000,
     cssEase: "linear",
+
     responsive: [
       {
         breakpoint: 1024, // Até 1024px (tablets)
@@ -56,7 +57,10 @@ const Home: React.FC = () => {
         breakpoint: 480, // Até 480px (celulares pequenos)
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1,
+          slidesToScroll: 2,
+          arrows:false,
+          autoplay:false
+
         },
       },
     ],
@@ -64,7 +68,22 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col ">
-      <h1 className="mb-5">Hyped Games</h1>
+      <div className="flex flex-col items-start mb-5 gap-2 w-52" >
+        <div className="flex items-center gap-2 justify-center">
+        <Image
+          alt="adawd"
+          src="/fire-svgrepo-com.svg"
+          width={30}
+          height={30}
+          />
+      <h1 className="text-xl tracking-wide font-bold">Hyped Games</h1>
+        </div>
+   
+      
+      </div>
+     
+      <Divider   className="bg-[#002e63] mb-5" />
+      
         <Slider {...settings}>
        {resposta.map((game) => (
         <div key={game.id} className="px-2">

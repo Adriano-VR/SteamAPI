@@ -1,5 +1,5 @@
 import { Game, GameDetails } from "@/interface/interface";
-import { Card, CardBody, CardFooter, CardHeader, Image } from "@heroui/react";
+import { Card, CardBody, CardFooter, CardHeader, Image, Link } from "@heroui/react";
 import { FC } from "react";
 import { useRouter } from "next/navigation"; // Importando 'useRouter' de 'next/navigation' no Next.js 13+
 
@@ -20,8 +20,8 @@ export const CardComponentHome: FC<CardComponentHomeProps> = ({ game,label }) =>
     <Card
       isPressable
       shadow="sm"
-      onPress={() => handlePress(game)} 
-      className="w-72"
+      
+      className=" md:w-72"
     >
       
   
@@ -36,7 +36,10 @@ export const CardComponentHome: FC<CardComponentHomeProps> = ({ game,label }) =>
         />
       </CardBody>
       <CardFooter >
-  <span className="w-full truncate block overflow-hidden whitespace-nowrap">{game.name}</span>
+      <Link isExternal underline="hover" color="foreground"   className="w-72">
+
+  <span onClick={() => handlePress(game)} onTouchStart={() => handlePress(game)} className="w-full truncate block overflow-hidden whitespace-nowrap">{game.name}</span>
+  </Link>
 </CardFooter>
 
     </Card>

@@ -15,6 +15,7 @@ export interface Game {
     genres: Genre[];
     hypes: number;
     name: string;
+    
 }
 export interface Franchise {
     id: number;

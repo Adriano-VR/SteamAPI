@@ -22,17 +22,25 @@ async function getAccessToken() {
   }
 }
 
-export async function getGames() {
+const TODAY_TIMESTAMP = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000);
+
+
+export async function getGamesComingSoon() {
   const token = await getAccessToken();
   if (!token) return;
+
+  const query = `
+  fields name, cover.url, first_release_date;
+       where first_release_date > ${TODAY_TIMESTAMP} & category = 0;
+       sort first_release_date asc;
+       limit 20;
+`;
+
 
   try {
     const response = await axios.post(
       '/games',
-      `fields name, hypes, cover.url, genres.name;
-        sort hypes desc;
-        where hypes > 10;
-        limit 12;`,
+      query,
       {
         headers: {
           'Client-ID': CLIENT_ID,
@@ -48,6 +56,39 @@ export async function getGames() {
   }
 }
 
+export async function getMostHypedGames() {
+  const token = await getAccessToken();
+
+  const query = `
+  fields name, cover.url, hypes, first_release_date;
+       where hypes > 0 & category = 0;
+       sort hypes desc;
+       limit 20;
+`;
+
+  try {
+    const response = await axios.post(
+      '/games',
+      query,
+      {
+        headers: {
+          'Client-ID': CLIENT_ID,
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/json'
+        }
+      }
+    );
+
+    console.log(response.data);
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Erro ao buscar os jogos mais hypados:", error.response ? error.response.data : error.message);
+    } else {
+      console.error("Erro ao buscar os jogos mais hypados:", error);
+    }
+  }
+}
 
 
 export async function getGamesById({ params }: { params: { gameId: string } }) {
@@ -55,7 +96,6 @@ export async function getGamesById({ params }: { params: { gameId: string } }) {
   const token = await getAccessToken();
   const { gameId } = params;
 
-  console.log("Game ID:", gameId); // Para depuração
 
   if (!token) {
     console.error('Token não obtido!');
@@ -66,7 +106,7 @@ export async function getGamesById({ params }: { params: { gameId: string } }) {
     // Fazendo a requisição para a API do IGDB para buscar os detalhes do jogo pelo gameId
     const response = await axios.post(
       '/games', // URL correta da API do IGDB
-      `fields name, cover.url,first_release_date, franchise,platforms,screenshots,videos,websites,involved_companies, summary; where id = ${gameId};`, // Query para buscar o jogo
+      `fields *; where id = ${gameId};`, // Query para buscar o jogo
       {
         headers: {
           'Client-ID': CLIENT_ID,

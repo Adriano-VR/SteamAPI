@@ -27,7 +27,8 @@ const GameDetailsPage = () => {
 
   return (
     <div>
-      {res && <CardDetails game={res} />}
+      <pre>{JSON.stringify(res , null , 2)}</pre>
+      {/* {res && <CardDetails game={res} />} */}
     </div>
   );
 };

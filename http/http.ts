@@ -1,10 +1,8 @@
 require('dotenv').config();
 import axios from 'axios';
-import { NextResponse } from 'next/server';
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
 const CLIENT_SECRET = process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET;
-
 
 
 async function getAccessToken() {
@@ -28,6 +26,8 @@ const TODAY_TIMESTAMP = Math.floor(new Date().setUTCHours(0, 0, 0, 0) / 1000);
 export async function getGamesComingSoon() {
   const token = await getAccessToken();
   if (!token) return;
+  console.log('token' , token);
+  
 
   const query = `
   fields name, cover.url, first_release_date;
@@ -63,7 +63,7 @@ export async function getMostHypedGames() {
   fields name, cover.url, hypes, first_release_date;
        where hypes > 0 & category = 0;
        sort hypes desc;
-       limit 20;
+       limit 30;
 `;
 
   try {
@@ -79,7 +79,7 @@ export async function getMostHypedGames() {
       }
     );
 
-    console.log(response.data);
+    // console.log(response.data);
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -90,42 +90,46 @@ export async function getMostHypedGames() {
   }
 }
 
-
-export async function getGamesById({ params }: { params: { gameId: string } }) {
-  // Obtém o token de acesso
+export async function getGameDetails({ params }: { params: { gameId: string } }) {
   const token = await getAccessToken();
   const { gameId } = params;
 
-
   if (!token) {
     console.error('Token não obtido!');
-    return null; // Retorna null se o token não estiver disponível
+    return null;
   }
 
   try {
-    // Fazendo a requisição para a API do IGDB para buscar os detalhes do jogo pelo gameId
-    const response = await axios.post(
-      '/games', // URL correta da API do IGDB
-      `fields *; where id = ${gameId};`, // Query para buscar o jogo
-      {
-        headers: {
-          'Client-ID': CLIENT_ID,
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json',
-        }
-      }
-    );
+    const [gameResponse, videoResponse, devResponse, screenResponse] = await Promise.all([
+      axios.post('/games', `fields name, first_release_date, cover.url,rating,summary,aggregated_rating; where id = ${gameId};`, {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
+      }),
+      axios.post('/videos', `fields video_id; where game = ${gameId};`, {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
+      }),
+      axios.post('/involved_companies', `fields company.name; where game = ${gameId} & developer = true;`, {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` },
+      }),
+      axios.post('/screenshots', `fields url; where game = ${gameId};`, {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${token}` },
+      }),
+    ]);
 
-    // Verificando se há dados na resposta
-    if (response.data.length === 0) {
+    if (gameResponse.data.length === 0) {
       console.error('Jogo não encontrado!');
-      return null; // Retorna null se o jogo não for encontrado
+      return null;
     }
 
-    return response.data[0]; // Retorna o primeiro jogo encontrado
-  } catch (error) {
-    console.error('Erro ao buscar jogo:', (error as any).response?.data);
-    return null; // Retorna null caso haja algum erro na requisição
+    return {
+      game: gameResponse.data[0],
+      video: videoResponse.data[0]?.video_id || null,
+      developer: devResponse.data[0]?.company?.name || null,
+      screenshots: screenResponse.data.map((screenshot: { url: string }) => 
+        screenshot.url.replace('t_thumb', 't_original')
+      ) || [],
+    };
+  } catch (error:any) {
+    console.error('Erro ao buscar detalhes do jogo:', error.response?.data || error.message);
+    return null;
   }
 }
-

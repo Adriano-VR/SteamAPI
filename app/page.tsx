@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { GameDetails } from "@/interface/interface";
 import { getMostHypedGames } from "@/http/http";
 import { Divider, Spinner } from "@heroui/react";
-import {  CardComponentHome } from "@/components/CardComponentHome";
+import { CardComponentHome } from "@/components/CardComponentHome";
 import Image from "next/image";
 
 const Home: React.FC = () => {
@@ -25,41 +25,67 @@ const Home: React.FC = () => {
     fetch();
   }, []);
 
-  if (loading) return  <div className="absolute inset-0 flex items-center justify-center"> <Spinner size='lg' label='Loading' color="success" /> </div>
+  if (loading) return <div className="absolute inset-0 flex items-center justify-center"> <Spinner size='lg'  color="warning" /> </div>
+
+  const CustomPrevArrow = (props: any) => {
+    const { onClick } = props;
+    return (
+      <button
+        onClick={onClick}
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black  rounded-full p-2"
+      >
+        <Image src='/arrow-left-svgrepo-com.svg' alt={""} width={26} height={26} />
+      </button>
+    );
+  };
+
+  const CustomNextArrow = (props: any) => {
+    const { onClick } = props;
+    return (
+      <button
+        onClick={onClick}
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black  rounded-full p-2"
+      >
+        <Image src='/arrow-right-svgrepo-com.svg' alt={""} width={26} height={26} />
+      </button>
+    );
+  };
 
 
   const settings = {
     dots: false,
     infinite: true,
     slidesToShow: 5,
-    slidesToScroll: 1,
+    slidesToScroll: 5,
     autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 2000,
+    speed: 1500,
+    autoplaySpeed: 5000,
     cssEase: "linear",
+    nextArrow: <CustomNextArrow />, // Custom next arrow
+    prevArrow: <CustomPrevArrow />, // Custom prev arrow
 
     responsive: [
       {
         breakpoint: 1024, // Até 1024px (tablets)
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+          slidesToScroll: 3,
         },
       },
       {
         breakpoint: 768, // Até 768px (dispositivos móveis)
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
+          slidesToScroll: 2,
         },
       },
       {
         breakpoint: 480, // Até 480px (celulares pequenos)
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 2,
-          arrows:false,
-          autoplay:false
+          slidesToScroll: 1,
+            speed:1000,
+   
 
         },
       },
@@ -68,32 +94,31 @@ const Home: React.FC = () => {
 
   return (
     <div className="flex flex-col ">
-      <div className="flex flex-col items-start mb-5 gap-2 w-52" >
-        <div className="flex items-center gap-2 justify-center">
-        <Image
-          alt="adawd"
-          src="/fire-svgrepo-com.svg"
-          width={30}
-          height={30}
-          />
-      <h1 className="text-xl tracking-wide font-bold">Hyped Games</h1>
-        </div>
-   
-      
-      </div>
-     
-      <Divider   className="bg-[#002e63] mb-5" />
-      
-        <Slider {...settings}>
-       {resposta.map((game) => (
-        <div key={game.id} className="px-2">
-         <CardComponentHome  game={game} label='Top' />
 
-        </div>
-       ))}
-        </Slider>
-        
-   
+
+      <Image
+        alt="adawd"
+        src="/fire-svgrepo-com.svg"
+        width={30}
+        height={30}
+      />
+
+
+
+
+      <Divider className="my-4" />
+
+
+      <Slider {...settings}>
+        {resposta.map((game) => (
+          <div key={game.id} className="px-2">
+            <CardComponentHome game={game} />
+
+          </div>
+        ))}
+      </Slider>
+
+
 
     </div>
   );

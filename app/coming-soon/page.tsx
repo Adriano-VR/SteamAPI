@@ -5,8 +5,11 @@ import React, { useEffect, useState } from 'react';
 import {Spinner} from "@heroui/react";
 import { getGamesComingSoon } from '@/http/http';
 import { CardDetails } from '@/components/CardDetails';
+import TableComponent from '@/components/Table';
+import { useRouter } from 'next/navigation';
 
 const Home: React.FC = () => {
+  const router = useRouter(); // Inicializa o roteador do Next.js
 
   const [loading, setLoading] = useState<boolean>(true);
   const [resposta, setResposta] = useState<GameDetails[]>([])
@@ -27,13 +30,11 @@ const Home: React.FC = () => {
 //usar o react-slick
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-4 justify-center items-center gap-4'>
    
-      {resposta.map((game: GameDetails) => (
-        <CardDetails key={game.id} game={game} />
-      ))}
+   
+    <TableComponent games={resposta} navigate={router.push}/>
 
-    </div>
+
   );
 };
 

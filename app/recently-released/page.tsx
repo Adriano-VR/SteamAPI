@@ -1,10 +1,11 @@
+"use client"
+import TableComponent from '@/components/Table';
 import React from 'react';
 
 const ComingSoonPage: React.FC = () => {
     return (
         <div>
-            <h1>Coming Soon</h1>
-            <p>Stay tuned for updates!</p>
+         TEste
         </div>
     );
 };

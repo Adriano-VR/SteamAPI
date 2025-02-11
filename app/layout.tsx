@@ -8,6 +8,9 @@ import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
+import { LayoutWrapper } from "@/components/LayoutWrapper";
+
+
 
 export const metadata: Metadata = {
   title: {
@@ -43,9 +46,11 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
             <Navbar />
-            <main className="container mx-auto  pt-2 px-6 flex-grow">
-              {children}
+            <main className="container mx-auto pt-2 px-6 flex-grow ">
+            {children}
             </main>
+             
+            
             <footer className="w-full flex items-center justify-center py-3">
               <Link
                 isExternal

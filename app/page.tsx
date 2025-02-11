@@ -66,10 +66,10 @@ const Home: React.FC = () => {
 
     responsive: [
       {
-        breakpoint: 1024, // Até 1024px (tablets)
+        breakpoint: 1400, // Até 1024px (tablets)
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToShow: 4,
+          slidesToScroll: 4,
         },
       },
       {

@@ -66,10 +66,10 @@ const GameDetailsPage = () => {
       <Divider />
       <div className="mt-3 grid grid-cols-1  md:grid-cols-3">
         <div className="flex items-center justify-evenly ">
-        <Image src={game?.cover.url.replace("t_thumb", "t_720p")} width={400}  alt="adaw" className="mb-10 md:m-0" />
+        <Image src={game?.cover.url.replace("t_thumb", "t_720p")} width={400}  alt="adaw" className="mb-10 w-full  xl:w-11/12 2xl:w-full" />
         <Divider orientation="vertical" className="hidden md:block items-center justify-center" />
         </div>
-      <div className="w-full col-span-2"> 
+      <div className="w-full col-span-2 justify-items-center"> 
       {video ? (  
           <iframe
             width="100%"
@@ -78,7 +78,7 @@ const GameDetailsPage = () => {
             title="Gameplay Trailer"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-         
+            className="w-full  xl:w-11/12 2xl:w-full"
           ></iframe>
         ) : (
           <p className="text-gray-500 mt-4">Nenhum vídeo disponível para este jogo.</p>
